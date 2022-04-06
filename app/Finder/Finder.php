@@ -6,21 +6,22 @@ class Finder
 {
     public static function scanFiles(string $path = ''): array
     {
+        $result = [];
         if (is_dir($path)) {
-            $subs = [];
             $dir = dir($path);
             while (false !== ($name = $dir->read())) {
                 if ($name !== '.' && $name !== '..') {
                     $subPath = $path . DIRECTORY_SEPARATOR . $name;
-                    $list = self::scanFiles($subPath);
-                    $subs[$name] = $list;
+                    if (is_dir($subPath)) {
+                        $result[] = array_merge($result, self::scanFiles($subPath));
+                    } else {
+                        $result[] = $subPath;
+                    }
                 }
             }
             $dir->close();
-        } else {
-            return [];
         }
-        return $subs;
+        return $result;
     }
 
     public static function filterFileType($type = 'mp3', $files = [])
