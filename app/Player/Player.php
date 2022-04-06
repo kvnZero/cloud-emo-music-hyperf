@@ -13,8 +13,8 @@ class Player
     /** @var int $playIndex 正在播放的下标 */
     static $playIndex = -1;
 
-    /** @var \DateTime $playTime 正在播放时长 */
-    static $playTime = null;
+    /** @var int $playTime 正在播放时长 */
+    static $playTime = 0;
 
     /** @var bool $playStatus 是否播放 */
     static $playStatus = false;
@@ -25,6 +25,7 @@ class Player
     public static function next()
     {
         self::$playIndex++;
+        self::$playTime = 0;
         if (count(self::$playList) == self::$playIndex) {
             self::$playIndex = 0; //回到首
         }
@@ -36,6 +37,7 @@ class Player
     public static function last()
     {
         self::$playIndex--;
+        self::$playTime = 0;
         if (count(self::$playList) == -1) {
             self::$playIndex = count(self::$playList); //去到尾
         }
@@ -43,9 +45,9 @@ class Player
 
     /**
      * 跳转到某一秒
-     * @param \DateTime $dateTime
+     * @param int $dateTime
      */
-    public static function jumpTo(\DateTime $dateTime)
+    public static function jumpTo(int $dateTime)
     {
         self::$playTime = $dateTime;
     }
@@ -95,5 +97,19 @@ class Player
             'status' => self::$playStatus,
             'time' => self::$playTime
         ];
+    }
+
+    /**
+     * 是否正在播放
+     * @return bool
+     */
+    public static function isPlay(): bool
+    {
+        return self::$playStatus;
+    }
+
+    public static function nextSecond()
+    {
+        self::$playTime++;
     }
 }
