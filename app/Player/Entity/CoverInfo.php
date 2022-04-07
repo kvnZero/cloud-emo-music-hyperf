@@ -2,7 +2,7 @@
 
 namespace App\Player\Entity;
 
-class CoverInfo
+class CoverInfo extends BaseInfo
 {
     /** @var string $path 路径 */
     public $path;

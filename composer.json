@@ -25,7 +25,8 @@
         "hyperf/memory": "~2.2.0",
         "hyperf/process": "~2.2.0",
         "hyperf/redis": "~2.2.0",
-        "hyperf/websocket-server": "^2.2"
+        "hyperf/websocket-server": "^2.2",
+        "james-heinrich/getid3": "^2.0-dev"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",

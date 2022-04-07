@@ -2,7 +2,7 @@
 
 namespace App\Player\Entity;
 
-class SignerInfo
+class SignerInfo extends BaseInfo
 {
     /** @var string $name 姓名 */
     public $name;

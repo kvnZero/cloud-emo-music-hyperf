@@ -2,7 +2,7 @@
 
 namespace App\Player\Entity;
 
-class MusicInfo
+class MusicInfo extends BaseInfo
 {
     /** @var string $name 名字 */
     public $name;
@@ -15,4 +15,10 @@ class MusicInfo
 
     /** @var SignerInfo $signer 演唱者信息 */
     public $signer;
+
+    /** @var string $album 专辑名 */
+    public $album;
+
+    /** @var int $recording_time 发布时间 */
+    public $recording_time;
 }

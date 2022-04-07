@@ -12,18 +12,25 @@ declare(strict_types=1);
 namespace App\Listener;
 
 use App\Finder\Finder;
+use App\Player\Player;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Events\QueryExecuted;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Str;
 
 /**
  * @Listener
  */
 class WorkStartLoadListener implements ListenerInterface
 {
+    /**
+     * @Inject
+     * @var StdoutLoggerInterface
+     */
+    protected $log;
+
     public function listen(): array
     {
         return [
@@ -37,6 +44,19 @@ class WorkStartLoadListener implements ListenerInterface
     public function process(object $event)
     {
         $files = Finder::scanFiles(BASE_PATH . '/resource/music');
-        var_dump($files);
+        $musicType = [
+            'mp3', 'wav'
+        ];
+        $files = array_values(array_filter($files, function($file) use($musicType) {
+            return in_array(pathinfo($file, PATHINFO_EXTENSION), $musicType);
+        }));
+
+        $allMusicObject = [];
+        foreach ($files as $file) {
+            $musicInfo = Finder::getMusicInfo($file);
+            $this->log->info("加载歌曲：" . ($musicInfo->signer->name ?? '未知') . ' - ' . $musicInfo->name);
+            $allMusicObject[] = $musicInfo;
+        }
+        Player::setPlayList($allMusicObject);
     }
 }
