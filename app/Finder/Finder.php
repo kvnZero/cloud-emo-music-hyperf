@@ -47,10 +47,22 @@ class Finder
         $info = $getID3->analyze($file);
 
         $musicInfo = new MusicInfo();
-        $musicInfo->signer = join(',', $info['tags']['id3v2']['artist']);
-        $musicInfo->name = join(',', $info['tags']['id3v2']['title']);
-        $musicInfo->album = join(',', $info['tags']['id3v2']['album']);
-        $musicInfo->recording_time = (new \DateTime($info['tags']['id3v2']['recording_time'][0]))->getTimestamp();
+
+		$analyzeKey = '';
+		if(isset($info['tags']['vorbiscomment'])) {
+			$analyzeKey = 'vorbiscomment';
+		}
+		if(isset($info['tags']['id3v2'])) {
+			$analyzeKey = 'id3v2';
+		}
+		$musicInfo->path = $file;
+		$musicInfo->url = 'http://127.0.0.1:9501/music/' . pathinfo($file, PATHINFO_BASENAME);
+		$musicInfo->signer = join(',', $info['tags'][$analyzeKey]['artist']);
+        $musicInfo->name = join(',', $info['tags'][$analyzeKey]['title']);
+        $musicInfo->album = join(',', $info['tags'][$analyzeKey]['album']);
+		if (!empty($info['tags'][$analyzeKey]['recording_time'])) {
+			$musicInfo->recording_time = (new \DateTime($info['tags'][$analyzeKey]['recording_time'][0]))->getTimestamp();
+		}
         $musicInfo->time = round($info['playtime_seconds'], 0, PHP_ROUND_HALF_DOWN);
 
         $coverImgPath = $info['filepath'] . '/' . pathinfo($info['filename'], PATHINFO_FILENAME) . '.jpg';
@@ -73,6 +85,7 @@ class Finder
             $coverInfo->path = $musicInfo->cover;
             $coverInfo->size = filesize($musicInfo->cover);
             $coverInfo->type = pathinfo($musicInfo->cover, PATHINFO_EXTENSION);
+			$coverInfo->url = 'http://127.0.0.1:9501/music/'.pathinfo($musicInfo->cover, PATHINFO_BASENAME);
             $musicInfo->cover = $coverInfo;
         }
         if (!empty($musicInfo->signer)) {

@@ -45,7 +45,7 @@ class WorkStartLoadListener implements ListenerInterface
     {
         $files = Finder::scanFiles(BASE_PATH . '/resource/music');
         $musicType = [
-            'mp3', 'wav'
+            'mp3', 'wav', 'flac'
         ];
         $files = array_values(array_filter($files, function($file) use($musicType) {
             return in_array(pathinfo($file, PATHINFO_EXTENSION), $musicType);
@@ -58,5 +58,15 @@ class WorkStartLoadListener implements ListenerInterface
             $allMusicObject[] = $musicInfo;
         }
         Player::setPlayList($allMusicObject);
+		Player::next();
+		Player::play();
+//		co(function(){
+//			while (true) {
+//				if (Player::isPlay()) {
+//					Player::nextSecond();
+//				}
+//				sleep(1);
+//			}
+//		});
     }
 }

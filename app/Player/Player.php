@@ -93,7 +93,7 @@ class Player
     public static function getCurrentPlayInfo(): array
     {
         return [
-            'music' => self::$playList[self::$playIndex],
+            'music' => self::$playList[self::$playIndex] ?? null,
             'status' => self::$playStatus,
             'time' => self::$playTime
         ];

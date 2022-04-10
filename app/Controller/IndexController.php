@@ -11,16 +11,41 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Player\Player;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\GetMapping;
+
+/**
+ * @Controller()
+ */
 class IndexController extends AbstractController
 {
-    public function index()
-    {
-        $user = $this->request->input('user', 'Hyperf');
-        $method = $this->request->getMethod();
-
-        return [
-            'method' => $method,
-            'message' => "Hello {$user}.",
-        ];
+	/**
+	 * @GetMapping(path="/get/play/list", methods="get")
+	 * @return \Psr\Http\Message\ResponseInterface
+	 */
+    public function playList(): \Psr\Http\Message\ResponseInterface
+	{
+		$playList = Player::getPlayList();
+		$list = [];
+		foreach($playList as $item) {
+			$list[] = $item->toArray();
+		}
+		return $this->response->json([
+			'code' => 200,
+			'data' => $list
+		]);
     }
+
+	/**
+	 * @GetMapping(path="/get/play", methods="get")
+	 * @return \Psr\Http\Message\ResponseInterface
+	 */
+	public function play(): \Psr\Http\Message\ResponseInterface
+	{
+		return $this->response->json([
+			'code' => 200,
+			'data' => Player::getCurrentPlayInfo()
+		]);
+	}
 }
