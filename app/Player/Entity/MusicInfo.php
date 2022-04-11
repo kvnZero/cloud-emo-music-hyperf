@@ -27,4 +27,7 @@ class MusicInfo extends BaseInfo
 
     /** @var int $recording_time 发布时间 */
     public $recording_time;
+
+    /** @var string $filename 源文件名 */
+    public $filename;
 }

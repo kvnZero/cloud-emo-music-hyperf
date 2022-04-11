@@ -57,6 +57,16 @@ class WorkStartLoadListener implements ListenerInterface
             $this->log->info("加载歌曲：" . ($musicInfo->signer->name ?? '未知') . ' - ' . $musicInfo->name);
             $allMusicObject[] = $musicInfo;
         }
+
+        //加载顺序
+        if (file_exists(BASE_PATH . '/resource/music/sort.json')) {
+            $fp_local = fopen(BASE_PATH . '/resource/music/sort.json', 'r'); //保存到同目录
+            $sortJson = fread($fp_local, filesize(BASE_PATH . '/resource/music/sort.json'));
+            fclose($fp_local);
+            $sortJson = json_decode($sortJson, true);
+            $allMusicObject = Finder::sortPlayList($allMusicObject, $sortJson['sort']);
+        }
+
         Player::setPlayList($allMusicObject);
 		Player::next();
 		Player::play();

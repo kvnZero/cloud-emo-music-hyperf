@@ -55,6 +55,7 @@ class Finder
 		if(isset($info['tags']['id3v2'])) {
 			$analyzeKey = 'id3v2';
 		}
+        $musicInfo->filename = pathinfo($file, PATHINFO_FILENAME);
 		$musicInfo->path = $file;
 		$musicInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/' . pathinfo($file, PATHINFO_BASENAME);
 		if (!empty($analyzeKey)) {
@@ -69,7 +70,6 @@ class Finder
             $fileNameArr = explode('-', pathinfo($info['filename'], PATHINFO_FILENAME));
             if (count($fileNameArr) == 2) {
                 $musicInfo->signer = trim($fileNameArr[0]);
-                $musicInfo->album = trim($fileNameArr[1]);
                 $musicInfo->name = trim($fileNameArr[1]);
             }
         }
@@ -130,4 +130,31 @@ class Finder
         }
         return $musicInfo;
     }
+
+    public static function sortPlayList($allMusicObject, $sortArr = [])
+    {
+        $notInSortList = [];
+        $inSortList = [];
+
+        /**
+         * @var int $i
+         * @var MusicInfo $object
+         */
+        foreach ($allMusicObject as $i => $object) {
+            if (!in_array($object->filename, $sortArr)) {
+                $notInSortList[] = $object;
+                unset($allMusicObject[$i]);
+            }
+        }
+        foreach ($sortArr as $sort) {
+            foreach ($allMusicObject as $object) {
+                if ($sort == $object->filename) {
+                    $inSortList[] = $object;
+                    break;
+                }
+            }
+        }
+        return array_merge($inSortList, $notInSortList);
+    }
+
 }
