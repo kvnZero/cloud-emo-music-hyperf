@@ -44,6 +44,15 @@ class Player
     }
 
     /**
+     * 首
+     */
+    public static function first()
+    {
+        self::$playIndex = 0;
+        self::$playTime = 0;
+    }
+
+    /**
      * 跳转到某一秒
      * @param int $dateTime
      */

@@ -11,7 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Finder\Finder;
 use App\Player\Player;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\GetMapping;
 
@@ -20,7 +23,13 @@ use Hyperf\HttpServer\Annotation\GetMapping;
  */
 class IndexController extends AbstractController
 {
-	/**
+    /**
+     * @Inject
+     * @var StdoutLoggerInterface
+     */
+    protected $log;
+
+    /**
 	 * @GetMapping(path="/get/play/list", methods="get")
 	 * @return \Psr\Http\Message\ResponseInterface
 	 */
@@ -48,4 +57,25 @@ class IndexController extends AbstractController
 			'data' => Player::getCurrentPlayInfo()
 		]);
 	}
+
+    /**
+     * @GetMapping(path="/reload/play/list", methods="get")
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function reload(): \Psr\Http\Message\ResponseInterface
+    {
+        $allMusicObject = Finder::getMusicResource('/resource/music', '/resource/music/sort.json');
+
+        foreach ($allMusicObject as $musicInfo) {
+            $this->log->info("加载歌曲：" . ($musicInfo->signer->name ?? '未知') . ' - ' . $musicInfo->name);
+        }
+
+        Player::setPlayList($allMusicObject);
+        Player::first();
+
+        return $this->response->json([
+            'code' => 200,
+            'data' => Player::getCurrentPlayInfo()
+        ]);
+    }
 }

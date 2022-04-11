@@ -43,28 +43,10 @@ class WorkStartLoadListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        $files = Finder::scanFiles(BASE_PATH . '/resource/music');
-        $musicType = [
-            'mp3', 'wav', 'flac'
-        ];
-        $files = array_values(array_filter($files, function($file) use($musicType) {
-            return in_array(pathinfo($file, PATHINFO_EXTENSION), $musicType);
-        }));
+        $allMusicObject = Finder::getMusicResource('/resource/music', '/resource/music/sort.json');
 
-        $allMusicObject = [];
-        foreach ($files as $file) {
-            $musicInfo = Finder::getMusicInfo($file);
+        foreach ($allMusicObject as $musicInfo) {
             $this->log->info("加载歌曲：" . ($musicInfo->signer->name ?? '未知') . ' - ' . $musicInfo->name);
-            $allMusicObject[] = $musicInfo;
-        }
-
-        //加载顺序
-        if (file_exists(BASE_PATH . '/resource/music/sort.json')) {
-            $fp_local = fopen(BASE_PATH . '/resource/music/sort.json', 'r'); //保存到同目录
-            $sortJson = fread($fp_local, filesize(BASE_PATH . '/resource/music/sort.json'));
-            fclose($fp_local);
-            $sortJson = json_decode($sortJson, true);
-            $allMusicObject = Finder::sortPlayList($allMusicObject, $sortJson['sort']);
         }
 
         Player::setPlayList($allMusicObject);

@@ -5,6 +5,7 @@ namespace App\Finder;
 use App\Player\Entity\CoverInfo;
 use App\Player\Entity\MusicInfo;
 use App\Player\Entity\SignerInfo;
+use App\Player\Player;
 use JamesHeinrich\GetID3\GetID3;
 
 class Finder
@@ -155,6 +156,33 @@ class Finder
             }
         }
         return array_merge($inSortList, $notInSortList);
+    }
+
+    public static function getMusicResource($path = '/resource/music', $sortPath = '/resource/music/sort.json')
+    {
+        $files = self::scanFiles(BASE_PATH . $path);
+        $musicType = [
+            'mp3', 'wav', 'flac'
+        ];
+        $files = array_values(array_filter($files, function($file) use($musicType) {
+            return in_array(pathinfo($file, PATHINFO_EXTENSION), $musicType);
+        }));
+
+        $allMusicObject = [];
+        foreach ($files as $file) {
+            $musicInfo = Finder::getMusicInfo($file);
+            $allMusicObject[] = $musicInfo;
+        }
+
+        //加载顺序
+        if (!empty($sortPath) && file_exists(BASE_PATH . $sortPath)) {
+            $fp_local = fopen(BASE_PATH . '/resource/music/sort.json', 'r'); //保存到同目录
+            $sortJson = fread($fp_local, filesize(BASE_PATH . '/resource/music/sort.json'));
+            fclose($fp_local);
+            $sortJson = json_decode($sortJson, true);
+            $allMusicObject = Finder::sortPlayList($allMusicObject, $sortJson['sort']);
+        }
+        return $allMusicObject;
     }
 
 }
