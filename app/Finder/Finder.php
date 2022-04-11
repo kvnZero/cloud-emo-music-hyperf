@@ -57,12 +57,22 @@ class Finder
 		}
 		$musicInfo->path = $file;
 		$musicInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/' . pathinfo($file, PATHINFO_BASENAME);
-		$musicInfo->signer = join(',', $info['tags'][$analyzeKey]['artist']);
-        $musicInfo->name = join(',', $info['tags'][$analyzeKey]['title']);
-        $musicInfo->album = join(',', $info['tags'][$analyzeKey]['album']);
-		if (!empty($info['tags'][$analyzeKey]['recording_time'])) {
-			$musicInfo->recording_time = (new \DateTime($info['tags'][$analyzeKey]['recording_time'][0]))->getTimestamp();
-		}
+		if (!empty($analyzeKey)) {
+            $musicInfo->signer = join(',', $info['tags'][$analyzeKey]['artist']);
+            $musicInfo->name = join(',', $info['tags'][$analyzeKey]['title']);
+            $musicInfo->album = join(',', $info['tags'][$analyzeKey]['album']);
+            if (!empty($info['tags'][$analyzeKey]['recording_time'])) {
+                $musicInfo->recording_time = (new \DateTime($info['tags'][$analyzeKey]['recording_time'][0]))->getTimestamp();
+            }
+        } else {
+            //尝试从歌名分析
+            $fileNameArr = explode('-', pathinfo($info['filename'], PATHINFO_FILENAME));
+            if (count($fileNameArr) == 2) {
+                $musicInfo->signer = trim($fileNameArr[0]);
+                $musicInfo->album = trim($fileNameArr[1]);
+                $musicInfo->name = trim($fileNameArr[1]);
+            }
+        }
         $musicInfo->time = round($info['playtime_seconds'], 0, PHP_ROUND_HALF_DOWN);
 
         $coverImgPath = $info['filepath'] . '/' . pathinfo($info['filename'], PATHINFO_FILENAME) . '.jpg';
