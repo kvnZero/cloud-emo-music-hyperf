@@ -75,7 +75,7 @@ class IndexController extends AbstractController
 
         return $this->response->json([
             'code' => 200,
-            'data' => Player::getCurrentPlayInfo()
+            'data' => Player::getPlayList()
         ]);
     }
 }
