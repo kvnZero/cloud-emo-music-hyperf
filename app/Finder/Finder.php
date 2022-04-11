@@ -56,7 +56,7 @@ class Finder
 			$analyzeKey = 'id3v2';
 		}
 		$musicInfo->path = $file;
-		$musicInfo->url = 'http://emo_server.abigeater.com/music/' . pathinfo($file, PATHINFO_BASENAME);
+		$musicInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/' . pathinfo($file, PATHINFO_BASENAME);
 		$musicInfo->signer = join(',', $info['tags'][$analyzeKey]['artist']);
         $musicInfo->name = join(',', $info['tags'][$analyzeKey]['title']);
         $musicInfo->album = join(',', $info['tags'][$analyzeKey]['album']);
@@ -85,7 +85,7 @@ class Finder
             $coverInfo->path = $musicInfo->cover;
             $coverInfo->size = filesize($musicInfo->cover);
             $coverInfo->type = pathinfo($musicInfo->cover, PATHINFO_EXTENSION);
-			$coverInfo->url = 'http://emo_server.abigeater.com/music/'.pathinfo($musicInfo->cover, PATHINFO_BASENAME);
+			$coverInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/'.pathinfo($musicInfo->cover, PATHINFO_BASENAME);
             $musicInfo->cover = $coverInfo;
         }
         if (!empty($musicInfo->signer)) {

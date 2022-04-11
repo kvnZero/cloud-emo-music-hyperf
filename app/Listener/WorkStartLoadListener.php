@@ -60,13 +60,13 @@ class WorkStartLoadListener implements ListenerInterface
         Player::setPlayList($allMusicObject);
 		Player::next();
 		Player::play();
-//		co(function(){
-//			while (true) {
-//				if (Player::isPlay()) {
-//					Player::nextSecond();
-//				}
-//				sleep(1);
-//			}
-//		});
+		co(function(){
+			while (true) {
+				if (Player::isPlay()) {
+					Player::nextSecond();
+				}
+				sleep(1);
+			}
+		});
     }
 }

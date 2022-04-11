@@ -111,5 +111,8 @@ class Player
     public static function nextSecond()
     {
         self::$playTime++;
+        if (self::$playTime == self::$playList[self::$playIndex]->time) {
+            self::next();
+        }
     }
 }
