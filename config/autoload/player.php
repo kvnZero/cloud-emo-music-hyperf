@@ -13,7 +13,7 @@ return [
     'default' => [
         'host' => env('PLAYER_HOST', 'http://emo_server.abigeater.com'),
         'static' => [
-            'path' => 'static'
+            'path' => env('PLAYER_STATIC_PATH', 'static'),
         ]
     ],
 ];
