@@ -11,7 +11,7 @@ use Hyperf\SocketIOServer\Socket;
 use Hyperf\Utils\Codec\Json;
 
 /**
- * @SocketIONamespace("/master")
+ * @SocketIONamespace("/")
  */
 class WebSocketController extends BaseNamespace
 {
@@ -45,6 +45,7 @@ class WebSocketController extends BaseNamespace
      */
     public function onSay(Socket $socket, $data)
     {
+        var_dump($data);
         $data = Json::decode($data);
         $socket->to($data['room'])->emit('event', $socket->getSid() . " say: {$data['message']}");
     }
