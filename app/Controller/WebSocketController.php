@@ -7,22 +7,19 @@ namespace App\Controller;
 use Hyperf\SocketIOServer\Annotation\Event;
 use Hyperf\SocketIOServer\Annotation\SocketIONamespace;
 use Hyperf\SocketIOServer\BaseNamespace;
+use Hyperf\SocketIOServer\SidProvider\SidProviderInterface;
 use Hyperf\SocketIOServer\Socket;
-use Hyperf\Utils\Codec\Json;
+use Hyperf\SocketIOServer\SocketIOConfig;
+use Hyperf\WebSocketServer\Sender;
 
 /**
- * @SocketIONamespace("/master")
+ * @SocketIONamespace("/")
  */
 class WebSocketController extends BaseNamespace
 {
-    /**
-     * @Event("event")
-     * @param string $data
-     */
-    public function onEvent(Socket $socket, $data)
+    public function __construct(Sender $sender, SidProviderInterface $sidProvider, ?SocketIOConfig $config = null)
     {
-        // 应答
-        return 'Event Received: ' . $data;
+        parent::__construct($sender, $sidProvider, $config);
     }
 
     /**
@@ -31,21 +28,24 @@ class WebSocketController extends BaseNamespace
      */
     public function onJoinRoom(Socket $socket, $data)
     {
-        // 将当前用户加入房间
         $socket->join($data);
-        // 向房间内其他用户推送（不含当前用户）
-        $socket->to($data)->emit('event', $socket->getSid() . "has joined {$data}");
-        // 向房间内所有人广播（含当前用户）
-        $this->emit('event', 'There are ' . count($socket->getAdapter()->clients($data)) . " players in {$data}");
+        $this->emit('client-change', count($socket->getAdapter()->clients($data)));
     }
 
     /**
-     * @Event("say")
+     * @Event("query-room-count")
      * @param string $data
      */
-    public function onSay(Socket $socket, $data)
+    public function queryRoomCount(Socket $socket, $data): int
     {
-        $data = Json::decode($data);
-        $socket->to($data['room'])->emit('event', $socket->getSid() . " say: {$data['message']}");
+        return count($socket->getAdapter()->clients($data));
+    }
+
+    /**
+     * @Event("disconnect")
+     */
+    public function onDisconnect(Socket $socket)
+    {
+        $this->emit('someone-leave-room', time());
     }
 }
