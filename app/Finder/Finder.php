@@ -85,10 +85,12 @@ class Finder
             if (!empty($info['comments']['picture'][0]['data'])) {
                 $fileType = explode('/', $info['comments']['picture'][0]['image_mime'])[1];
                 $coverImgPath = $info['filepath'] . '/' . pathinfo($info['filename'], PATHINFO_FILENAME) . '.' . $fileType;
-                $fp_local = fopen($coverImgPath, 'wb'); //保存到同目录
-                fwrite($fp_local, $info['comments']['picture'][0]['data']);
-                fclose($fp_local);
-                $musicInfo->cover = $coverImgPath;
+                if (!file_exists($coverImgPath)) {
+                    $fp_local = fopen($coverImgPath, 'wb'); //保存到同目录
+                    fwrite($fp_local, $info['comments']['picture'][0]['data']);
+                    fclose($fp_local);
+                    $musicInfo->cover = $coverImgPath;
+                }
             }
         }
         if (!empty($musicInfo->cover)) {
