@@ -48,4 +48,12 @@ class WebSocketController extends BaseNamespace
     {
         $this->emit('someone-leave-room', time());
     }
+
+    /**
+     * @Event("message-send")
+     */
+    public function onMessageSend(Socket $socket, $data)
+    {
+        $this->emit('message-come', $data);
+    }
 }
