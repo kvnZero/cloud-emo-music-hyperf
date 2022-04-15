@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\SocketIOServer\Annotation\Event;
 use Hyperf\SocketIOServer\Annotation\SocketIONamespace;
 use Hyperf\SocketIOServer\BaseNamespace;
 use Hyperf\SocketIOServer\SidProvider\SidProviderInterface;
 use Hyperf\SocketIOServer\Socket;
 use Hyperf\SocketIOServer\SocketIOConfig;
+use Hyperf\Utils\ApplicationContext;
 use Hyperf\WebSocketServer\Sender;
 
 /**
@@ -54,6 +56,7 @@ class WebSocketController extends BaseNamespace
      */
     public function onMessageSend(Socket $socket, $data)
     {
+        ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)->info(sprintf("发送消息[%s]:%s", $socket->getFd(), $data));
         $this->emit('message-come', $data);
     }
 }
