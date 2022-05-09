@@ -32,4 +32,6 @@ PLAYER_STATIC_PATH=music
 
 5. 将歌曲存放在目录`/resource/music/`下
 
+6. 默认已开启自动监听音乐目录，增加新文件后自动重新加载歌单列表，通过环境变量`PLAYER_LISTEN_MUSIC_AUTO_LOAD=false`可关闭
+
 参考部署文章：[Hyperf项目使用Supervisor部署](https://abigeater.com/archives/190)

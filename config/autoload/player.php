@@ -14,6 +14,12 @@ return [
         'host' => env('PLAYER_HOST', 'http://emo_server.abigeater.com'),
         'static' => [
             'path' => env('PLAYER_STATIC_PATH', 'static'),
+        ],
+        'listen' => [
+            'music' => [
+                'auto_load' => env('PLAYER_LISTEN_MUSIC_AUTO_LOAD', true),
+            ],
+            'speed' => env('PLAYER_LISTEN_SPEED', 10), //second
         ]
     ],
 ];
