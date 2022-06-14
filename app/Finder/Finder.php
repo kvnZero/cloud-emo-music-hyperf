@@ -32,7 +32,7 @@ class Finder
 
     public static function filterFileType($type = 'mp3', $files = [])
     {
-        return array_filter($files, function ($item) use ($type){
+        return array_filter($files, function ($item) use ($type) {
             return pathinfo($item, PATHINFO_EXTENSION) == $type;
         });
     }
@@ -49,17 +49,17 @@ class Finder
 
         $musicInfo = new MusicInfo();
 
-		$analyzeKey = '';
-		if(isset($info['tags']['vorbiscomment'])) {
-			$analyzeKey = 'vorbiscomment';
-		}
-		if(isset($info['tags']['id3v2'])) {
-			$analyzeKey = 'id3v2';
-		}
+        $analyzeKey = '';
+        if (isset($info['tags']['vorbiscomment'])) {
+            $analyzeKey = 'vorbiscomment';
+        }
+        if (isset($info['tags']['id3v2'])) {
+            $analyzeKey = 'id3v2';
+        }
         $musicInfo->filename = pathinfo($file, PATHINFO_FILENAME);
-		$musicInfo->path = $file;
-		$musicInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/' . pathinfo($file, PATHINFO_BASENAME);
-		if (!empty($analyzeKey)) {
+        $musicInfo->path = $file;
+        $musicInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/' . pathinfo($file, PATHINFO_BASENAME);
+        if (!empty($analyzeKey)) {
             $musicInfo->signer = join(',', $info['tags'][$analyzeKey]['artist']);
             $musicInfo->name = join(',', $info['tags'][$analyzeKey]['title']);
             $musicInfo->album = join(',', $info['tags'][$analyzeKey]['album']);
@@ -98,7 +98,7 @@ class Finder
             $coverInfo->path = $musicInfo->cover;
             $coverInfo->size = filesize($musicInfo->cover);
             $coverInfo->type = pathinfo($musicInfo->cover, PATHINFO_EXTENSION);
-			$coverInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/'.pathinfo($musicInfo->cover, PATHINFO_BASENAME);
+            $coverInfo->url = config('player.default.host') . '/'. config('player.default.static.path') .'/'.pathinfo($musicInfo->cover, PATHINFO_BASENAME);
             $musicInfo->cover = $coverInfo;
         }
         if (!empty($musicInfo->signer)) {
@@ -166,7 +166,7 @@ class Finder
         $musicType = [
             'mp3', 'wav', 'flac'
         ];
-        $files = array_values(array_filter($files, function($file) use($musicType) {
+        $files = array_values(array_filter($files, function ($file) use ($musicType) {
             return in_array(pathinfo($file, PATHINFO_EXTENSION), $musicType);
         }));
 
@@ -186,5 +186,4 @@ class Finder
         }
         return $allMusicObject;
     }
-
 }

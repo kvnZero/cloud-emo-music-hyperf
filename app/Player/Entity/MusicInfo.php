@@ -4,13 +4,13 @@ namespace App\Player\Entity;
 
 class MusicInfo extends BaseInfo
 {
-	/** @var string $path 路径 */
-	public $path;
+    /** @var string $path 路径 */
+    public $path;
 
-	/** @var string $url 访问路径 */
-	public $url;
+    /** @var string $url 访问路径 */
+    public $url;
 
-	/** @var string $name 名字 */
+    /** @var string $name 名字 */
     public $name;
 
     /** @var int $time 时长 */
@@ -30,4 +30,7 @@ class MusicInfo extends BaseInfo
 
     /** @var string $filename 源文件名 */
     public $filename;
+
+    /** @var array $animation 歌曲动画 */
+    public $animation;
 }

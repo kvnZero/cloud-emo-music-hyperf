@@ -57,6 +57,11 @@ class WebSocketController extends BaseNamespace
     public function onMessageSend(Socket $socket, $data)
     {
         ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)->info(sprintf("发送消息[%s]:%s", $socket->getFd(), $data));
-        $this->emit('message-come', $data);
+        if (strpos($data, 'ser-animation:') === 0) {
+            $data = str_replace('ser-animation:', '', $data);
+            $this->emit('play-animation', $data);
+        } else {
+            $this->emit('message-come', $data);
+        }
     }
 }

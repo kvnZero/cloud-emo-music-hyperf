@@ -8,16 +8,16 @@ use App\Player\Entity\MusicInfo;
 class Player
 {
     /** @var MusicInfo[] $playList 扫描的播放列表 */
-    static $playList = [];
+    public static $playList = [];
 
     /** @var int $playIndex 正在播放的下标 */
-    static $playIndex = -1;
+    public static $playIndex = -1;
 
     /** @var int $playTime 正在播放时长 */
-    static $playTime = 0;
+    public static $playTime = 0;
 
     /** @var bool $playStatus 是否播放 */
-    static $playStatus = false;
+    public static $playStatus = false;
 
     /**
      * 下一首
